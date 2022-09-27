@@ -1,0 +1,8 @@
+C:\Users\SebRos\Desktop\repo\CaseTwo\obj\Debug\CaseTwo.csproj.AssemblyReference.cache
+C:\Users\SebRos\Desktop\repo\CaseTwo\obj\Debug\CaseTwo.csproj.SuggestedBindingRedirects.cache
+C:\Users\SebRos\Desktop\repo\CaseTwo\obj\Debug\CaseTwo.csproj.CoreCompileInputs.cache
+C:\Users\SebRos\Desktop\repo\CaseTwo\bin\Debug\CaseTwo.exe.config
+C:\Users\SebRos\Desktop\repo\CaseTwo\bin\Debug\CaseTwo.exe
+C:\Users\SebRos\Desktop\repo\CaseTwo\bin\Debug\CaseTwo.pdb
+C:\Users\SebRos\Desktop\repo\CaseTwo\obj\Debug\CaseTwo.exe
+C:\Users\SebRos\Desktop\repo\CaseTwo\obj\Debug\CaseTwo.pdb
