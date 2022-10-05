@@ -8,12 +8,16 @@ using System.Threading;
 
 namespace CaseTwo
 {
-    internal class Program
+    public class Program
     {
         //public bool check { get; set; }
-
-        public bool debug { get; set; }
-        public bool spil { get; set; }
+        private bool debug;
+        public bool Debug
+        {
+            get { return debug; }
+            set { debug = value; }
+        }
+        public bool Spil { get; set; }
         public bool Fod { get; set; }
         
 
@@ -22,7 +26,7 @@ namespace CaseTwo
             bool valid = false;
             string tast = "", input = "", name, num, file = "", path = "";
             Program pg = new Program();
-            check ck = new check();
+            Check ck = new Check();
             NameCheck nc = new NameCheck(); // nc is an abbr. for namecheck
             OutPut op = new OutPut(); // op is an abbr. for output
             FileHandlers fh = new FileHandlers(); // fh is an abbr. for FileHandlers
@@ -34,21 +38,21 @@ namespace CaseTwo
             do
             {
                 op.KeyPress(out tast);
-                op.ClearCurrentConsoleLine(pg.debug);
+                op.ClearCurrentConsoleLine(pg.Debug);
             } while (tast != "d" && tast != "s");
             
 
             if (tast == "d")
             {
-                pg.debug = true;
+                pg.Debug = true;
             }
             else
             {
-                pg.debug = false;
+                pg.Debug = false;
             }
-            Console.Clear();
 
-            op.PrintLine(pg.debug, "[L] Login | [O] Opret");
+            Console.Clear();
+            op.PrintLine(pg.Debug, "[L] Login | [O] Opret");
 
             do
             {
@@ -60,48 +64,70 @@ namespace CaseTwo
                 if (tast == "o")
                 {
 
-                    op.PrintLine(pg.debug, "Opret bruger");
+                    op.PrintLine(pg.Debug, "Opret bruger");
                     do
                     {
                         do
                         {
-                            op.PrintLine(pg.debug, "Indtast venligst dit navn:");
-                            name = Console.ReadLine();
-                            nc.CheckChars(pg.debug, name, out valid);
+                            do
+                            {
+
+                                op.PrintLine(pg.Debug, "Indtast venligst dit navn:");
+                                name = Console.ReadLine();
+                                nc.CheckChars(pg.Debug, name, out valid);
+
+                                if (!valid)
+                                {
+                                    op.PrintLine(pg.Debug, "Dit brugernavn indeholder ugyldig(e) tegn");
+                                }
+                            } while (!valid);
+
+                            op.Update(input, name);
+
+                            do
+                            {
+                                op.PrintLine(pg.Debug, "Indtast venligst dit kodeord:");
+                                num = Console.ReadLine();
+                                nc.CheckNumber(pg.Debug, num, out valid);
+
+                                if (!valid)
+                                {
+                                    op.PrintLine(pg.Debug, "Dit kodeord indeholder ugyldige(e) tegn");
+                                }
+                            } while (!valid);
+
+                            op.Update(input, name);
                         } while (!valid);
 
-                        op.Update(input, name);
-
-                        do
+                        if (name.ToLower() == num.ToLower())
                         {
-                            op.PrintLine(pg.debug, "Indtast venligst dit nummer:");
-                            num = Console.ReadLine();
-                            nc.CheckNumber(pg.debug, num, out valid);
-                        } while (!valid);
+                            valid = false;
+                            op.PrintLine(pg.Debug, "Dit brugernavn og kodeord må ikke være det samme!");
+                        }
 
-                        op.Update(input, name);
                     } while (!valid);
 
-                    op.PrintLine(pg.debug, "Succes! Din bruger er oprettet!");
+
+                    op.PrintLine(pg.Debug, "Succes! Din bruger er oprettet!");
 
 
-                    if (pg.debug)
+                    if (pg.Debug)
                     {
-                        op.PrintLine(pg.debug, "[O] Opret Fil  |  [S] Slet fil");
+                        op.PrintLine(pg.Debug, "[O] Opret Fil  |  [S] Slet fil");
                         do
                         {
                             op.KeyPress(out tast);
-                            op.ClearCurrentConsoleLine(pg.debug);
+                            op.ClearCurrentConsoleLine(pg.Debug);
 
                         } while (tast != "o" && tast != "s");
 
                         if (tast == "o")
                         {
-                            fh.Create(pg.debug, file, out path);
+                            fh.Create(pg.Debug, file, out path);
                         }
                         else if (tast == "s")
                         {
-                            fh.Delete(pg.debug, file);
+                            fh.Delete(pg.Debug, file);
                         }
                     }
                 }
@@ -109,12 +135,16 @@ namespace CaseTwo
                 {
                     do
                     {
-                        op.PrintLine(pg.debug, "Intast brugernavn: ");
+                        op.PrintLine(pg.Debug, "Intast brugernavn: ");
                         name = Console.ReadLine().Trim();
 
-                        op.PrintLine(pg.debug,  "Indtast nummer: ");
+                        op.PrintLine(pg.Debug,  "Indtast kodeord: ");
                         num = Console.ReadLine();
 
+                        if (name.ToLower() == num.ToLower())
+                        {
+                            valid = false;
+                        }
                         string[] lines = File.ReadAllLines(file);
 
                         for (int i = 0; i < lines.Length; i++)
@@ -128,8 +158,8 @@ namespace CaseTwo
                 }
                 else if (tast == "h")
                 {
-                    op.ClearCurrentConsoleLine(pg.debug);
-                    op.PrintLine(pg.debug, "Genvej!");
+                    op.ClearCurrentConsoleLine(pg.Debug);
+                    op.PrintLine(pg.Debug, "Genvej!");
                     valid = true;
                 }
             } while (!valid);
@@ -138,32 +168,34 @@ namespace CaseTwo
             {
                 do
                 {
-                    if (sl.counter > 0)
+                    if (sl.Counter > 0)
                     {
                         
-                        Console.WriteLine($"Du har været her {sl.counter} gange");
+                        op.PrintLine(pg.Debug, $"Du har været her {sl.Counter} gang(e)");
 
-                        gm.Quit(out tast);
+                        gm.Quit(pg.Debug, out tast);
                     }
-                    op.PrintLine(pg.debug, "\n[S] Spil | [F] Fodbold");
+                    op.PrintLine(pg.Debug, "[D] Dans | [F] Fodbold");
                     op.KeyPress(out tast);
-                    ck.counter(sl.counter);
-                } while (tast != "s" && tast != "f");
+                    //ck.Counter(sl.Counter); - Funktion virker ikke helt...
+                    sl.Counter++;
+                } while (tast != "d" && tast != "f");
 
-                if (tast == "s")
+                if (tast == "d")
                 {
                     do
                     {
-                        sl.Run();  
-                    } while (pg.spil);
+                        // Spil sl = new Spil();
+                        sl.Run(pg.Debug);  
+                    } while (pg.Spil);
                 }
                 else if (tast == "f")
                 {
-                    fb.Start();
+                    fb.Start(pg.Debug);
                 } while (pg.Fod);
 
                 Console.Clear();
-            } while (!pg.spil);
+            } while (!pg.Spil);
  
 
             Console.ReadKey();
@@ -172,13 +204,13 @@ namespace CaseTwo
 
     class FileHandlers
     { 
-        public void Create(bool debug, string file, out string path)
+        public void Create(bool Debug, string file, out string path)
         {
             OutPut op = new OutPut();
             if (file == "")
             {
-                op.PrintLine(debug, "[Opret fil]");
-                op.PrintLine(debug, "Indtast et filnavn: ");
+                op.PrintLine(Debug, "[Opret fil]");
+                op.PrintLine(Debug, "Indtast et filnavn: ");
                 file = Console.ReadLine().TrimEnd();
                 if (file == "")
                 {
@@ -192,20 +224,20 @@ namespace CaseTwo
 
                 if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), file)))
                 {
-                    op.PrintLine(debug, $"{file} er nu oprettet");
+                    op.PrintLine(Debug, $"{file} er nu oprettet");
                 }
             }
 
             path = Path.Combine(Directory.GetCurrentDirectory(), file);
         }
 
-        public void Delete(bool debug, string file)
+        public void Delete(bool Debug, string file)
         {
             OutPut op = new OutPut();
             if (file == "")
             {
-                op.PrintLine(debug, "[Slet fil]");
-                op.PrintLine(debug, "Indtast et filnavn");
+                op.PrintLine(Debug, "[Slet fil]");
+                op.PrintLine(Debug, "Indtast et filnavn");
             }
 
             if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), file)))
@@ -214,16 +246,16 @@ namespace CaseTwo
 
                 if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(), file)))
                 {
-                    op.PrintLine(debug, $"{file} er nu slettet");
+                    op.PrintLine(Debug, $"{file} er nu slettet");
                 }
             }
         }
 
-        public void WriteText(bool debug, string file, string input)
+        public void WriteText(bool Debug, string file, string input)
         {
             if (!File.Exists(file))
             {
-                Create(debug, file, out string tmp);
+                Create(Debug, file, out string tmp);
             }
 
             File.WriteAllText(file, input);
@@ -250,8 +282,12 @@ namespace CaseTwo
 
         public void ClearCurrentConsoleLine(bool debug)
         {
+            /* A void found on stackoverflow to clear the current line
+             * This method won't do much if the program is ran in debug mode
+            */
+
             OutPut op = new OutPut();
-            // A void found on stackoverflow to clear the current line
+            
             int currentLineCursor = Console.CursorTop;
             Console.SetCursorPosition(0, Console.CursorTop);
             op.PrintLine(debug, new string(' ', Console.WindowWidth));
@@ -259,10 +295,10 @@ namespace CaseTwo
         }
 
 
-        public void PrintLine(bool debug, string print)
+        public void PrintLine(bool Debug, string print)
         {
             OutPut op = new OutPut();
-            if (debug)
+            if (Debug)
             {
                 System.Diagnostics.Debug.WriteLine(print);
             }
@@ -294,7 +330,7 @@ namespace CaseTwo
                 valid = false;
             }
 
-            if (!name.Any(Char.IsLetter))
+            if (!name.All(Char.IsLetter))
             {
                 valid = false;
             }
@@ -305,21 +341,34 @@ namespace CaseTwo
             }
         }
 
-        public void CheckNumber(bool debug, string num, out bool valid)
+        public void CheckNumber(bool Debug, string num, out bool valid)
         {
             OutPut op = new OutPut();
             valid = true;
 
-            if (num.Length != 8)
+            if (num.Length < 12)
             {
                 valid = false;
             }
 
-            valid = int.TryParse(num, out int tmp);
-
-            if (!valid)
+            if (!num.Any(char.IsUpper) | num.Any(char.IsLower))
             {
-                op.PrintLine(debug, "Invalid number!");
+                valid = false;
+            }
+
+            if (num.All(char.IsLetterOrDigit) | num.Any(char.IsNumber))
+            {
+                valid = false;
+            }
+
+            if (char.IsDigit(num[0]) | char.IsDigit(num[num.Length - 1]))
+            {
+                valid = false;
+            }
+
+            if (num.Any(char.IsWhiteSpace))
+            {
+                valid = false;
             }
         }
     }
